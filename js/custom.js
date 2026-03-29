@@ -1,158 +1,106 @@
 // ======================= SMOOTH SCROLL =======================
-document.addEventListener('click', (e) => {
-    const link = e.target.closest('.nav a');
-    if (!link) return;
-
-    e.preventDefault();
-
-    const target = document.querySelector(link.getAttribute('href'));
-    if (target) {
-        target.scrollIntoView({ behavior: 'smooth' });
-    }
+document.querySelectorAll('.nav a').forEach(link => {
+    link.addEventListener('click', e => {
+        e.preventDefault();
+        document.querySelector(link.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+    });
 });
 
 // ======================= FADE-IN ON SCROLL =======================
 const faders = document.querySelectorAll('.fade-in');
-
-const observer = new IntersectionObserver((entries, obs) => {
+const appearOptions = { threshold: 0.2, rootMargin: "0px 0px -50px 0px" };
+const appearOnScroll = new IntersectionObserver((entries, observer) => {
     entries.forEach(entry => {
         if (!entry.isIntersecting) return;
-
         entry.target.classList.add('show');
-        obs.unobserve(entry.target);
+        observer.unobserve(entry.target);
     });
-}, {
-    threshold: 0.2,
-    rootMargin: "0px 0px -50px 0px"
-});
+}, appearOptions);
+faders.forEach(fader => appearOnScroll.observe(fader));
 
-faders.forEach(el => observer.observe(el));
+// ======================= SKILL BAR ANIMATION =======================
+window.addEventListener('load', () => {
+    document.querySelectorAll('.progress-bar').forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0%';
+        setTimeout(() => { bar.style.width = width; }, 500);
+    });
+});
 
 // ======================= PROJECT CARD LINK =======================
-document.addEventListener('click', (e) => {
-    const card = e.target.closest('.project-card[data-link]');
-    if (!card) return;
-
-    const link = card.getAttribute('data-link');
-    if (link) {
-        window.open(link, '_blank');
-    }
-});
-
-// ======================= MODAL SYSTEM =======================
-
-// Global state
-let activeModal = null;
-let currentIndex = 0;
-
-// Cache modal data
-const modalData = new Map();
-
-document.querySelectorAll('.modal').forEach(modal => {
-    modalData.set(modal.id, {
-        element: modal,
-        images: modal.querySelectorAll('.slider-img'),
-        prev: modal.querySelector('.prev'),
-        next: modal.querySelector('.next'),
-        close: modal.querySelector('.close')
+document.querySelectorAll('.project-card[data-link]').forEach(card => {
+    card.addEventListener('click', () => {
+        window.open(card.getAttribute('data-link'), '_blank');
     });
 });
 
-// Show image
-function showImage(modalObj, index) {
-    const { images } = modalObj;
-    if (images.length === 0) return;
+// ======================= MODAL FUNCTIONALITY =======================
+document.querySelectorAll('.modal').forEach(modal => {
+    const images = modal.querySelectorAll('.slider-img');
+    let index = 0;
 
-    images.forEach(img => img.style.display = 'none');
-    images[index].style.display = 'block';
-}
+    const prev = modal.querySelector('.prev');
+    const next = modal.querySelector('.next');
 
-// Open modal
-function openModal(modalId) {
-    const modalObj = modalData.get(modalId);
-    if (!modalObj) return;
+    const showImage = i => {
+        if (images.length === 0) return;
+        images.forEach(img => img.style.display = 'none');
+        images[i].style.display = 'block';
+    };
 
-    activeModal = modalObj;
-    currentIndex = 0;
-
-    showImage(modalObj, currentIndex);
-    modalObj.element.style.display = 'block';
-}
-
-// Close modal
-function closeModal() {
-    if (!activeModal) return;
-
-    activeModal.element.style.display = 'none';
-    activeModal = null;
-}
-
-// ======================= EVENT DELEGATION =======================
-
-// Open modal
-document.addEventListener('click', (e) => {
-    const trigger = e.target.closest('.modal-trigger');
-    if (!trigger) return;
-
-    const modalId = trigger.dataset.modal;
-    openModal(modalId);
-});
-
-// Close modal
-document.addEventListener('click', (e) => {
-
-    // Close button
-    if (e.target.closest('.close')) {
-        closeModal();
-        return;
+    // Show arrows only if more than 1 image
+    if (images.length > 1) {
+        prev.style.display = 'block';
+        next.style.display = 'block';
     }
 
-    // Outside click
-    if (activeModal && e.target === activeModal.element) {
-        closeModal();
-    }
-});
+    // Prev / Next button
+    prev.addEventListener('click', () => {
+        if (images.length <= 1) return;
+        index = (index - 1 + images.length) % images.length;
+        showImage(index);
+    });
+    next.addEventListener('click', () => {
+        if (images.length <= 1) return;
+        index = (index + 1) % images.length;
+        showImage(index);
+    });
 
-// Prev, Next buttons
-document.addEventListener('click', (e) => {
-    if (!activeModal) return;
+    // Close modal
+    modal.querySelector('.close').addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
 
-    const { images } = activeModal;
+    // Clicking outside modal
+    window.addEventListener('click', e => {
+        if (e.target === modal) modal.style.display = 'none';
+    });
 
-    if (e.target.closest('.prev') && images.length > 1) {
-        currentIndex = (currentIndex - 1 + images.length) % images.length;
-        showImage(activeModal, currentIndex);
-    }
+    // Open modal via trigger
+    document.querySelectorAll(`.modal-trigger[data-modal="${modal.id}"]`).forEach(trigger => {
+        trigger.addEventListener('click', () => {
+            if (images.length === 0) return;
+            index = 0;
+            showImage(index);
+            modal.style.display = 'block';
+        });
+    });
 
-    if (e.target.closest('.next') && images.length > 1) {
-        currentIndex = (currentIndex + 1) % images.length;
-        showImage(activeModal, currentIndex);
-    }
-});
-
-// Keyboard controls
-document.addEventListener('keydown', (e) => {
-    if (!activeModal) return;
-
-    const { images } = activeModal;
-
-    switch (e.key) {
-        case 'Escape':
-            closeModal();
-            break;
-
-        case 'ArrowLeft':
-            if (images.length > 1) {
-                currentIndex = (currentIndex - 1 + images.length) % images.length;
-                showImage(activeModal, currentIndex);
+    // Keyboard navigation
+    window.addEventListener('keydown', e => {
+        if (modal.style.display === 'block') {
+            if (e.key === 'Escape') {
+                modal.style.display = 'none';
             }
-            break;
-
-        case 'ArrowRight':
             if (images.length > 1) {
-                currentIndex = (currentIndex + 1) % images.length;
-                showImage(activeModal, currentIndex);
+                if (e.key === 'ArrowLeft') {
+                    index = (index - 1 + images.length) % images.length;
+                    showImage(index);
+                } else if (e.key === 'ArrowRight') {
+                    index = (index + 1) % images.length;
+                    showImage(index);
+                }
             }
-            break;
-    }
+        }
+    });
 });
