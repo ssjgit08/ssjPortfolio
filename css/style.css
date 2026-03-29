@@ -33,8 +33,6 @@ ul li { margin-bottom: 5px; }
 
 /* ======================= COURSEWORK & CERTIFICATIONS ======================= */
 .coursework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; }
-
-/* Coursework (informational) */
 .coursework-grid span { 
     background: #fff; 
     padding: 10px; 
@@ -47,8 +45,6 @@ ul li { margin-bottom: 5px; }
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.15);
 }
-
-/* Certifications (clickable) */
 .coursework-grid a { 
     background: #fff; 
     padding: 10px; 
@@ -69,7 +65,7 @@ ul li { margin-bottom: 5px; }
 /* ======================= EXPERIENCE ======================= */
 .exp-item { margin-bottom: 25px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 3px 8px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; }
 .exp-item ul { padding-left: 20px; }
-.exp-item:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+.exp-item:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); background: #9b59b6; color: #fff; }
 
 /* ======================= PROJECTS ======================= */
 .projects-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
@@ -90,22 +86,54 @@ ul li { margin-bottom: 5px; }
 .project-card:hover h3, .project-card:hover p { color: #fff; }
 
 /* ======================= SKILLS ======================= */
-.skills-container .skill { margin-bottom: 20px; }
-.progress { background: #eee; border-radius: 25px; overflow: hidden; height: 15px; }
-.progress-bar { background: #9b59b6; height: 100%; width: 0%; transition: width 1.5s; }
+.skills-box {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+.skill-category {
+    background: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+.skill-category:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+}
+.skill-category h3 {
+    color: #6c3483;
+    margin-bottom: 10px;
+}
+.skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.skill-tags span {
+    background: #f0e6f6;
+    color: #6c3483;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    transition: 0.3s;
+    cursor: default;
+}
+.skill-tags span:hover {
+    background: #9b59b6;
+    color: #fff;
+    transform: scale(1.08);
+}
 
 /* ======================= MODALS ======================= */
 .modal { display: none; position: fixed; z-index: 999; top:0; left:0; width:100%; height:100%; padding:0; overflow:hidden; background-color: rgba(0,0,0,0.95); }
 .modal-slider { position: relative; width: 100%; height: 100%; display:flex; justify-content:center; align-items:center; overflow:hidden; }
 .slider-img { display:none; max-width:95%; max-height:95%; width:auto; height:auto; object-fit:contain; border-radius:10px; }
-
-/* Arrows */
 .prev, .next { cursor:pointer; position:absolute; top:50%; transform:translateY(-50%); padding:12px; color:white; font-weight:bold; font-size:30px; border-radius:50%; background: rgba(0,0,0,0.5); user-select:none; transition:0.3s, transform 0.3s; z-index:10; display:none; }
 .prev { left:5%; }
 .next { right:5%; }
 .prev:hover, .next:hover { background: rgba(0,0,0,0.8); transform: scale(1.2); }
-
-/* Close */
 .close { position:absolute; top:15px; right:15px; color:#fff; font-size:35px; font-weight:bold; cursor:pointer; z-index:1000; }
 .close:hover { color:#bbb; }
 
