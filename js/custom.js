@@ -33,10 +33,13 @@ window.addEventListener('load', () => {
     });
 });
 
-// ======================= PROJECT CARD LINK =======================
-document.querySelectorAll('.project-card[data-link]').forEach(card => {
+// ======================= PROJECT & EXPERIENCE CARD LINKS =======================
+document.querySelectorAll('.project-card[data-link], .exp-item[data-link]').forEach(card => {
     card.addEventListener('click', () => {
-        window.open(card.getAttribute('data-link'), '_blank');
+        const link = card.getAttribute('data-link');
+        if (link) {
+            window.open(link, '_blank', 'noopener,noreferrer');
+        }
     });
 });
 
